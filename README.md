@@ -1,6 +1,9 @@
 # test_project
 
 https://jsonplaceholder.typicode.com/
+``
+flutter packages pub run build_runner build --delete-conflicting-outputs
+``
 
 ## Getting Started
 

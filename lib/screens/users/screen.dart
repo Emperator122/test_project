@@ -73,6 +73,7 @@ class UsersScreenState extends State<UsersScreen> {
           }
 
           return ListView(
+            physics: const BouncingScrollPhysics(),
             children: _vm.users
                 .map(
                   (user) => Padding(
