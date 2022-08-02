@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_project/core/disposable_vm/disposable_vm.dart';
+import 'package:test_project/core/sync_bloc/sync_bloc_error_listener.dart';
 import 'package:test_project/network/models/comment.dart';
 import 'package:test_project/network/models/post.dart';
 import 'package:test_project/network/models/user.dart';
@@ -113,64 +114,70 @@ class PostScreenState extends State<PostScreen> {
       appBar: AppBar(
         title: Text('${widget.user.username}\'s Posts'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: BlocBuilder(
-          bloc: _vm.commentsSyncBloc,
-          builder: (context, _) {
-            if (_vm.commentsSyncing) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+      body: MultiSyncBlocErrorsListener(
+        blocs: [
+          _vm.sendCommentSyncBloc,
+          _vm.commentsSyncBloc,
+        ],
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: BlocBuilder(
+            bloc: _vm.commentsSyncBloc,
+            builder: (context, _) {
+              if (_vm.commentsSyncing) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-            if (_vm.commentsSyncBloc.state.hasOnlyError) {
-              return Center(
-                child: Text(
-                  'Ошибка синхронизации.\n${_vm.commentsSyncBloc.state.lastSyncError}',
-                ),
-              );
-            }
+              if (_vm.commentsSyncBloc.state.hasOnlyError) {
+                return Center(
+                  child: Text(
+                    'Ошибка синхронизации.\n${_vm.commentsSyncBloc.state.lastSyncError}',
+                  ),
+                );
+              }
 
-            return ListView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                PostCard(title: widget.post.title, body: widget.post.body),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Comments',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        const Divider(
-                          thickness: 2,
-                        ),
-                        ..._vm.comments.map(
-                          (comment) => Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CommentWidget(comment: comment),
-                              const Divider(
-                                thickness: 2,
-                              )
-                            ],
+              return ListView(
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  PostCard(title: widget.post.title, body: widget.post.body),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Comments',
+                            style: TextStyle(fontWeight: FontWeight.w600),
                           ),
-                        ),
-                      ],
+                          const Divider(
+                            thickness: 2,
+                          ),
+                          ..._vm.comments.map(
+                            (comment) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CommentWidget(comment: comment),
+                                const Divider(
+                                  thickness: 2,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () => _showAddCommentBottomSheet(),
-                  child: const Text('Add Comment'),
-                ),
-              ],
-            );
-          },
+                  ElevatedButton(
+                    onPressed: () => _showAddCommentBottomSheet(),
+                    child: const Text('Add Comment'),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

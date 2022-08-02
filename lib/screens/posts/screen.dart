@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_project/core/disposable_vm/disposable_vm.dart';
+import 'package:test_project/core/sync_bloc/sync_bloc_error_listener.dart';
 import 'package:test_project/network/models/post.dart';
 import 'package:test_project/network/models/user.dart';
 import 'package:test_project/repositories/posts_repository.dart';
@@ -62,35 +63,38 @@ class PostsScreenState extends State<PostsScreen> {
       appBar: AppBar(
         title: Text('${widget.user.username}\'s Posts'),
       ),
-      body: BlocBuilder(
+      body: SyncBlocErrorsListener(
         bloc: _vm.postsSyncBloc,
-        builder: (context, _) {
-          if (_vm.postsSyncing) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+        child: BlocBuilder(
+          bloc: _vm.postsSyncBloc,
+          builder: (context, _) {
+            if (_vm.postsSyncing) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-          if (_vm.postsSyncBloc.state.hasOnlyError) {
-            return Center(
-              child: Text(
-                'Ошибка синхронизации.\n${_vm.postsSyncBloc.state.lastSyncError}',
-              ),
-            );
-          }
+            if (_vm.postsSyncBloc.state.hasOnlyError) {
+              return Center(
+                child: Text(
+                  'Ошибка синхронизации.\n${_vm.postsSyncBloc.state.lastSyncError}',
+                ),
+              );
+            }
 
-          return PostsList(
-            posts: _vm.posts,
-            onPostTap: (Post post) => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => PostScreen(
-                  user: widget.user,
-                  post: post,
+            return PostsList(
+              posts: _vm.posts,
+              onPostTap: (Post post) => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PostScreen(
+                    user: widget.user,
+                    post: post,
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

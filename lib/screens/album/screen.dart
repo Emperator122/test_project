@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:test_project/core/disposable_vm/disposable_vm.dart';
+import 'package:test_project/core/sync_bloc/sync_bloc_error_listener.dart';
 import 'package:test_project/dto/album_preview_dto.dart';
 import 'package:test_project/network/models/photo.dart';
 import 'package:test_project/repositories/albums_repository.dart';
@@ -83,76 +84,79 @@ class AlbumScreenState extends State<AlbumScreen> {
       appBar: AppBar(
         title: Text('Photos of ${widget.album.title} album'),
       ),
-      body: BlocBuilder(
-          bloc: _vm.albumPhotosSyncBloc,
-          builder: (context, _) {
-            if (_vm.albumsSyncing) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+      body: SyncBlocErrorsListener(
+        bloc: _vm.albumPhotosSyncBloc,
+        child: BlocBuilder(
+            bloc: _vm.albumPhotosSyncBloc,
+            builder: (context, _) {
+              if (_vm.albumsSyncing) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-            if (_vm.albumPhotosSyncBloc.state.hasOnlyError) {
-              return Center(
-                child: Text(
-                  'Ошибка синхронизации.\n${_vm.albumPhotosSyncBloc.state.lastSyncError}',
-                ),
-              );
-            }
+              if (_vm.albumPhotosSyncBloc.state.hasOnlyError) {
+                return Center(
+                  child: Text(
+                    'Ошибка синхронизации.\n${_vm.albumPhotosSyncBloc.state.lastSyncError}',
+                  ),
+                );
+              }
 
-            return Stack(
-              children: [
-                PageView(
-                  controller: _vm.pageController,
-                  children: _vm.photos
-                      .map(
-                        (photo) => Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image(
-                              image: CachedNetworkImageProvider(photo.url),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Expanded(
-                              child: Text(
-                                photo.title,
-                                textAlign: TextAlign.justify,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600),
+              return Stack(
+                children: [
+                  PageView(
+                    controller: _vm.pageController,
+                    children: _vm.photos
+                        .map(
+                          (photo) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image(
+                                image: CachedNetworkImageProvider(photo.url),
                               ),
-                            ),
-                          ],
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  photo.title,
+                                  textAlign: TextAlign.justify,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                        .toList(),
+                  ),
+                  StreamBuilder<double>(
+                    stream: _vm.listenablePageController,
+                    builder: (context, snapshot) {
+                      final currentPage = snapshot.data ?? 0;
+                      return Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          height: 80,
+                          child: Slider(
+                            max: _vm.photos.length * 1.0,
+                            divisions: _vm.photos.length,
+                            value: currentPage,
+                            onChanged: (value) {
+                              _vm.setPage(value);
+                            },
+                            label: '${(currentPage + 1).round()}',
+                          ),
                         ),
-                      )
-                      .toList(),
-                ),
-                StreamBuilder<double>(
-                  stream: _vm.listenablePageController,
-                  builder: (context, snapshot) {
-                    final currentPage = snapshot.data ?? 0;
-                    return Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SizedBox(
-                        height: 80,
-                        child: Slider(
-                          max: _vm.photos.length * 1.0,
-                          divisions: _vm.photos.length,
-                          value: currentPage,
-                          onChanged: (value) {
-                            _vm.setPage(value);
-                          },
-                          label: '${(currentPage + 1).round()}',
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            );
-          }),
+                      );
+                    },
+                  ),
+                ],
+              );
+            }),
+      ),
     );
   }
 }

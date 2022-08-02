@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_project/core/disposable_vm/disposable_vm.dart';
+import 'package:test_project/core/sync_bloc/sync_bloc_error_listener.dart';
 import 'package:test_project/dto/album_preview_dto.dart';
 import 'package:test_project/network/models/post.dart';
 import 'package:test_project/network/models/user.dart';
@@ -89,81 +90,87 @@ class UserScreenState extends State<UserScreen> {
       appBar: AppBar(
         title: Text(widget.user.username),
       ),
-      body: ListView(
-        children: [
-          PrimaryInfo(user: widget.user),
-          CompanyInfo(company: widget.user.company),
-          AddressInfo(address: widget.user.address),
-          BlocBuilder(
-            bloc: _vm.postsPreviewSyncBloc,
-            builder: (context, _) {
-              if (_vm.postsSyncing) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              if (_vm.postsPreviewSyncBloc.state.hasOnlyError) {
-                return Center(
-                  child: Text(
-                    'Ошибка синхронизации.\n${_vm.postsPreviewSyncBloc.state.lastSyncError}',
-                  ),
-                );
-              }
-
-              return PostsListPreview(
-                posts: _vm.posts,
-                onWatchAll: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => PostsScreen(user: widget.user),
-                  ),
-                ),
-                onPostTap: (post) => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => PostScreen(
-                      user: widget.user,
-                      post: post,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-          BlocBuilder(
-            bloc: _vm.albumsPreviewSyncBloc,
-            builder: (context, _) {
-              if (_vm.albumsSyncing) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              if (_vm.albumsPreviewSyncBloc.state.hasOnlyError) {
-                return Center(
-                  child: Text(
-                    'Ошибка синхронизации.\n${_vm.albumsPreviewSyncBloc.state.lastSyncError}',
-                  ),
-                );
-              }
-
-              return AlbumsPreview(
-                albums: _vm.albums,
-                onWatchAll: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AlbumsScreen(user: widget.user),
-                  ),
-                ),
-                onAlbumTap: (album) => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AlbumScreen(
-                      album: album,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
+      body: MultiSyncBlocErrorsListener(
+        blocs: [
+          _vm.albumsPreviewSyncBloc,
+          _vm.postsPreviewSyncBloc,
         ],
+        child: ListView(
+          children: [
+            PrimaryInfo(user: widget.user),
+            CompanyInfo(company: widget.user.company),
+            AddressInfo(address: widget.user.address),
+            BlocBuilder(
+              bloc: _vm.postsPreviewSyncBloc,
+              builder: (context, _) {
+                if (_vm.postsSyncing) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (_vm.postsPreviewSyncBloc.state.hasOnlyError) {
+                  return Center(
+                    child: Text(
+                      'Ошибка синхронизации.\n${_vm.postsPreviewSyncBloc.state.lastSyncError}',
+                    ),
+                  );
+                }
+
+                return PostsListPreview(
+                  posts: _vm.posts,
+                  onWatchAll: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PostsScreen(user: widget.user),
+                    ),
+                  ),
+                  onPostTap: (post) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PostScreen(
+                        user: widget.user,
+                        post: post,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            BlocBuilder(
+              bloc: _vm.albumsPreviewSyncBloc,
+              builder: (context, _) {
+                if (_vm.albumsSyncing) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (_vm.albumsPreviewSyncBloc.state.hasOnlyError) {
+                  return Center(
+                    child: Text(
+                      'Ошибка синхронизации.\n${_vm.albumsPreviewSyncBloc.state.lastSyncError}',
+                    ),
+                  );
+                }
+
+                return AlbumsPreview(
+                  albums: _vm.albums,
+                  onWatchAll: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AlbumsScreen(user: widget.user),
+                    ),
+                  ),
+                  onAlbumTap: (album) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AlbumScreen(
+                        album: album,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
