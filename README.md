@@ -1,6 +1,10 @@
 # test_project
+Проект основан на API
 
 https://jsonplaceholder.typicode.com/
+
+# Генерация
+
 ``
 flutter packages pub run build_runner build --delete-conflicting-outputs
 ``
