@@ -1,4 +1,5 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:test_project/dto/album_preview_dto.dart';
 
@@ -30,8 +31,12 @@ class Albums extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.network(album.thumbnailUrl ??
-                            'https://via.placeholder.com/150x150'), // for test project it's ok
+                        Image(
+                          image: CachedNetworkImageProvider(
+                            album.thumbnailUrl ??
+                                'https://via.placeholder.com/150x150',
+                          ), // for test project it's ok
+                        ),
                         const SizedBox(
                           height: 8,
                         ),

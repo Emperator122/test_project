@@ -1,4 +1,5 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
@@ -43,7 +44,7 @@ class AlbumVM extends DisposableVM {
 
   bool get albumsSyncing =>
       albumPhotosSyncBloc.state.syncing || !albumPhotosSyncBloc.state.hadSync;
-  
+
   void setPage(double page) {
     pageController.jumpToPage(page.round());
   }
@@ -109,7 +110,9 @@ class AlbumScreenState extends State<AlbumScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.network(photo.url),
+                            Image(
+                              image: CachedNetworkImageProvider(photo.url),
+                            ),
                             const SizedBox(
                               height: 8,
                             ),
@@ -117,8 +120,6 @@ class AlbumScreenState extends State<AlbumScreen> {
                               child: Text(
                                 photo.title,
                                 textAlign: TextAlign.justify,
-                                // maxLines: 2,
-                                // overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w600),
                               ),
@@ -137,17 +138,17 @@ class AlbumScreenState extends State<AlbumScreen> {
                       child: SizedBox(
                         height: 80,
                         child: Slider(
-                          max: _vm.photos.length*1.0,
+                          max: _vm.photos.length * 1.0,
                           divisions: _vm.photos.length,
                           value: currentPage,
                           onChanged: (value) {
                             _vm.setPage(value);
                           },
-                          label: '${(currentPage+1).round()}',
+                          label: '${(currentPage + 1).round()}',
                         ),
                       ),
                     );
-                  }
+                  },
                 ),
               ],
             );
