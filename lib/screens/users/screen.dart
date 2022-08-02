@@ -6,6 +6,7 @@ import 'package:test_project/core/disposable_vm/disposable_vm.dart';
 import 'package:test_project/core/sync_bloc/events.dart';
 import 'package:test_project/network/models/user.dart';
 import 'package:test_project/repositories/users_repository.dart';
+import 'package:test_project/screens/user/screen.dart';
 import 'package:test_project/screens/users/bloc/users_bloc.dart';
 import 'package:test_project/screens/users/widgets/user_card.dart';
 
@@ -81,7 +82,11 @@ class UsersScreenState extends State<UsersScreen> {
                     child: UserCard(
                       userName: user.username,
                       name: user.name,
-                      onTap: () => true,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => UserScreen(user: user),
+                        ),
+                      ),
                     ),
                   ),
                 )
@@ -91,5 +96,4 @@ class UsersScreenState extends State<UsersScreen> {
       ),
     );
   }
-
 }
