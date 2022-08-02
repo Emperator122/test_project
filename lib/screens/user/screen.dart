@@ -7,6 +7,7 @@ import 'package:test_project/network/models/post.dart';
 import 'package:test_project/network/models/user.dart';
 import 'package:test_project/repositories/albums_repository.dart';
 import 'package:test_project/repositories/posts_repository.dart';
+import 'package:test_project/screens/albums/screen.dart';
 import 'package:test_project/screens/posts/screen.dart';
 import 'package:test_project/screens/user/bloc/albums_preview_bloc.dart';
 import 'package:test_project/screens/user/bloc/posts_preview_bloc.dart';
@@ -138,7 +139,11 @@ class UserScreenState extends State<UserScreen> {
 
               return AlbumsPreview(
                 albums: _vm.albums,
-                onWatchAll: () => true,
+                onWatchAll: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AlbumsScreen(user: widget.user),
+                  ),
+                ),
                 onAlbumTap: (album) => true,
               );
             },

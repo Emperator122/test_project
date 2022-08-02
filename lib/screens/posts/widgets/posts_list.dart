@@ -13,43 +13,38 @@ class PostsList extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'User\'s Posts',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 16,
-            ),
-            const Divider(),
-            ...posts
-                .map(
-                  (post) => InkWell(
-                onTap: () => onPostTap(post),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      post.title,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      child: ListView(
+        physics: const BouncingScrollPhysics(),
+        children: [
+          ...posts
+              .map(
+                (post) => InkWell(
+                  onTap: () => onPostTap(post),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            post.title,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          const Divider(),
+                          Text(
+                            post.body,
+                            style: const TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                        ],
+                      ),
                     ),
-                    Text(
-                      post.body,
-                      style: const TextStyle(fontStyle: FontStyle.italic),
-                    ),
-                    const Divider(),
-                  ],
+                  ),
                 ),
-              ),
-            )
-                .toList(),
-          ],
-        ),
+              )
+              .toList(),
+        ],
       ),
     );
   }

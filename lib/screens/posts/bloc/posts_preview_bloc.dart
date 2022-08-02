@@ -4,22 +4,22 @@ import 'package:test_project/core/sync_bloc/sync_bloc.dart';
 import 'package:test_project/network/models/post.dart';
 import 'package:test_project/repositories/posts_repository.dart';
 
-class AllPostsPreviewSyncBloc
-    extends BaseSyncBloc<BuiltList<Post>, AllPostsPreviewFetchEvent> {
+class PostsSyncBloc
+    extends BaseSyncBloc<BuiltList<Post>, PostsFetchEvent> {
   final PostsRepository postsRepository;
 
-  AllPostsPreviewSyncBloc({required this.postsRepository}) : super(null);
+  PostsSyncBloc({required this.postsRepository}) : super(null);
 
   @override
-  Future<BuiltList<Post>> fetch(AllPostsPreviewFetchEvent fetchDataEvent) async {
+  Future<BuiltList<Post>> fetch(PostsFetchEvent fetchDataEvent) async {
     return postsRepository.getUserPosts(fetchDataEvent.userId);
   }
 }
 
-class AllPostsPreviewFetchEvent extends SyncBlocFetchData {
+class PostsFetchEvent extends SyncBlocFetchData {
   final String userId;
 
-  AllPostsPreviewFetchEvent({
+  PostsFetchEvent({
     required this.userId,
     bool clearData = false,
   }) : super(clearData: clearData);

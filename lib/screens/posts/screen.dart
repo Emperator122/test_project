@@ -9,24 +9,24 @@ import 'package:test_project/screens/posts/bloc/posts_preview_bloc.dart';
 import 'package:test_project/screens/posts/widgets/posts_list.dart';
 
 class PostsVM extends DisposableVM {
-  late final AllPostsPreviewSyncBloc allPostsPreviewSyncBloc;
+  late final PostsSyncBloc postsSyncBloc;
 
   PostsVM(String userId) {
-    allPostsPreviewSyncBloc =
-        AllPostsPreviewSyncBloc(postsRepository: PostsRepositoryImpl());
+    postsSyncBloc =
+        PostsSyncBloc(postsRepository: PostsRepositoryImpl());
 
-    allPostsPreviewSyncBloc.add(AllPostsPreviewFetchEvent(userId: userId));
+    postsSyncBloc.add(PostsFetchEvent(userId: userId));
 
-    add(() => allPostsPreviewSyncBloc.close());
+    add(() => postsSyncBloc.close());
   }
 
   BuiltList<Post> get posts {
-    assert(allPostsPreviewSyncBloc.state.data != null, 'no data in usersSyncBloc');
-    return allPostsPreviewSyncBloc.state.data!;
+    assert(postsSyncBloc.state.data != null, 'no data in usersSyncBloc');
+    return postsSyncBloc.state.data!;
   }
 
   bool get postsSyncing =>
-      allPostsPreviewSyncBloc.state.syncing || !allPostsPreviewSyncBloc.state.hadSync;
+      postsSyncBloc.state.syncing || !postsSyncBloc.state.hadSync;
 }
 
 class PostsScreen extends StatefulWidget {
@@ -62,32 +62,28 @@ class PostsScreenState extends State<PostsScreen> {
       appBar: AppBar(
         title: Text('${widget.user.username}\'s Posts'),
       ),
-      body: ListView(
-        children: [
-          BlocBuilder(
-            bloc: _vm.allPostsPreviewSyncBloc,
-            builder: (context, _) {
-              if (_vm.postsSyncing) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+      body: BlocBuilder(
+        bloc: _vm.postsSyncBloc,
+        builder: (context, _) {
+          if (_vm.postsSyncing) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-              if (_vm.allPostsPreviewSyncBloc.state.hasOnlyError) {
-                return Center(
-                  child: Text(
-                    'Ошибка синхронизации.\n${_vm.allPostsPreviewSyncBloc.state.lastSyncError}',
-                  ),
-                );
-              }
+          if (_vm.postsSyncBloc.state.hasOnlyError) {
+            return Center(
+              child: Text(
+                'Ошибка синхронизации.\n${_vm.postsSyncBloc.state.lastSyncError}',
+              ),
+            );
+          }
 
-              return PostsList(
-                posts: _vm.posts,
-                onPostTap: (Post post) {  },
-              );
-            },
-          ),
-        ],
+          return PostsList(
+            posts: _vm.posts,
+            onPostTap: (Post post) {  },
+          );
+        },
       ),
     );
   }
