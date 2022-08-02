@@ -1,9 +1,7 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_project/core/disposable_vm/disposable_vm.dart';
-import 'package:test_project/core/sync_bloc/events.dart';
 import 'package:test_project/network/models/user.dart';
 import 'package:test_project/repositories/users_repository.dart';
 import 'package:test_project/screens/user/screen.dart';
@@ -16,7 +14,7 @@ class UsersVM extends DisposableVM {
   UsersVM() {
     usersSyncBloc = UsersSyncBloc(usersRepository: UsersRepositoryImpl());
 
-    usersSyncBloc.add(SyncBlocFetchData());
+    usersSyncBloc.add(UsersFetchEvent());
 
     add(() => usersSyncBloc.close());
   }
@@ -68,8 +66,10 @@ class UsersScreenState extends State<UsersScreen> {
           }
 
           if (_vm.usersSyncBloc.state.hasOnlyError) {
-            return const Center(
-              child: Text('Ошибка синхронизации.'),
+            return Center(
+              child: Text(
+                'Ошибка синхронизации.\n${_vm.usersSyncBloc.state.lastSyncError}',
+              ),
             );
           }
 

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:built_collection/built_collection.dart';
 import 'package:test_project/network/http_service/http_service.dart';
 import 'package:test_project/network/models/user.dart';

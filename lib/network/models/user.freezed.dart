@@ -444,13 +444,14 @@ class __$$_AddressCopyWithImpl<$Res> extends _$AddressCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Address implements _Address {
+class _$_Address extends _Address {
   const _$_Address(
       {required this.street,
       required this.suite,
       required this.city,
       required this.zipcode,
-      required this.geo});
+      required this.geo})
+      : super._();
 
   factory _$_Address.fromJson(Map<String, dynamic> json) =>
       _$$_AddressFromJson(json);
@@ -506,13 +507,14 @@ class _$_Address implements _Address {
   }
 }
 
-abstract class _Address implements Address {
+abstract class _Address extends Address {
   const factory _Address(
       {required final String street,
       required final String suite,
       required final String city,
       required final String zipcode,
       required final Geo geo}) = _$_Address;
+  const _Address._() : super._();
 
   factory _Address.fromJson(Map<String, dynamic> json) = _$_Address.fromJson;
 

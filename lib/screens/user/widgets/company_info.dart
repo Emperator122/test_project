@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:test_project/network/models/user.dart';
 
-class PrimaryInfo extends StatelessWidget {
-  final User user;
+class CompanyInfo extends StatelessWidget {
+  final Company company;
 
-  const PrimaryInfo({
+  const CompanyInfo({
     super.key,
-    required this.user,
+    required this.company,
   });
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class PrimaryInfo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Primary information',
+              'Company',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(
@@ -27,13 +27,13 @@ class PrimaryInfo extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'USERNAME',
+                    'NAME',
                     style: TextStyle(color: Theme.of(context).hintColor),
                   ),
                 ),
                 Expanded(
                   flex: 3,
-                  child: Text(user.username),
+                  child: Text(company.name),
                 ),
               ],
             ),
@@ -42,7 +42,7 @@ class PrimaryInfo extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'E-MAIL',
+                    'BS', // idk wtf
                     style: TextStyle(
                       color: Theme.of(context).hintColor,
                     ),
@@ -50,7 +50,7 @@ class PrimaryInfo extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 3,
-                  child: Text(user.email),
+                  child: Text(company.bs),
                 ),
               ],
             ),
@@ -59,7 +59,7 @@ class PrimaryInfo extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'PHONE',
+                    'CATCH PHRASE',
                     style: TextStyle(
                       color: Theme.of(context).hintColor,
                     ),
@@ -67,24 +67,12 @@ class PrimaryInfo extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 3,
-                  child: Text(user.phone),
-                ),
-              ],
-            ),
-            const Divider(),
-            Row(
-              children: [
-                Expanded(
                   child: Text(
-                    'WEBSITE',
-                    style: TextStyle(
-                      color: Theme.of(context).hintColor,
+                    company.catchPhrase,
+                    style: const TextStyle(
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Text(user.website),
                 ),
               ],
             ),

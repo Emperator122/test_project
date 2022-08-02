@@ -1,4 +1,3 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'user.freezed.dart';
 part 'user.g.dart';
@@ -14,13 +13,15 @@ class User with _$User {
     required String phone,
     required String website,
     required Company company,
-}) = _User;
+  }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }
 
 @freezed
 class Address with _$Address {
+  const Address._();
+
   const factory Address({
     required String street,
     required String suite,
@@ -31,6 +32,9 @@ class Address with _$Address {
 
   factory Address.fromJson(Map<String, dynamic> json) =>
       _$AddressFromJson(json);
+
+  String get addressString =>
+      '$zipcode, $city, $street (${geo.lat}, ${geo.lng})';
 }
 
 @freezed
