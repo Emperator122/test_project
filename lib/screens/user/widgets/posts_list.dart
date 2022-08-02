@@ -38,7 +38,10 @@ class PostsListPreview extends StatelessWidget {
                       children: [
                         Text(
                           post.title,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                          ),
                         ),
                         Text(
                           post.body,

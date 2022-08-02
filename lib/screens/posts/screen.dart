@@ -5,15 +5,15 @@ import 'package:test_project/core/disposable_vm/disposable_vm.dart';
 import 'package:test_project/network/models/post.dart';
 import 'package:test_project/network/models/user.dart';
 import 'package:test_project/repositories/posts_repository.dart';
-import 'package:test_project/screens/posts/bloc/posts_preview_bloc.dart';
+import 'package:test_project/screens/post/screen.dart';
+import 'package:test_project/screens/posts/bloc/posts_bloc.dart';
 import 'package:test_project/screens/posts/widgets/posts_list.dart';
 
 class PostsVM extends DisposableVM {
   late final PostsSyncBloc postsSyncBloc;
 
   PostsVM(String userId) {
-    postsSyncBloc =
-        PostsSyncBloc(postsRepository: PostsRepositoryImpl());
+    postsSyncBloc = PostsSyncBloc(postsRepository: PostsRepositoryImpl());
 
     postsSyncBloc.add(PostsFetchEvent(userId: userId));
 
@@ -81,7 +81,14 @@ class PostsScreenState extends State<PostsScreen> {
 
           return PostsList(
             posts: _vm.posts,
-            onPostTap: (Post post) {  },
+            onPostTap: (Post post) => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => PostScreen(
+                  user: widget.user,
+                  post: post,
+                ),
+              ),
+            ),
           );
         },
       ),

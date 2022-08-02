@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:test_project/network/models/post.dart';
+import 'package:test_project/ui/post_card.dart';
 
 class PostsList extends StatelessWidget {
   final BuiltList<Post> posts;
@@ -22,24 +23,9 @@ class PostsList extends StatelessWidget {
               .map(
                 (post) => InkWell(
                   onTap: () => onPostTap(post),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            post.title,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          const Divider(),
-                          Text(
-                            post.body,
-                            style: const TextStyle(fontStyle: FontStyle.italic),
-                          ),
-                        ],
-                      ),
-                    ),
+                  child: PostCard(
+                    title: post.title,
+                    body: post.body,
                   ),
                 ),
               )
