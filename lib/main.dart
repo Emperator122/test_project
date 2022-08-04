@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:test_project/network/preferences/endpoints.dart';
 import 'package:test_project/network/preferences/network_preferences.dart';

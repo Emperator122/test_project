@@ -18,7 +18,7 @@ class Albums extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
       child: GridView.count(
         physics: const BouncingScrollPhysics(),
-        childAspectRatio: 9 / 10,
+        childAspectRatio: (MediaQuery.of(context).size.width / 2 - 10) / 215,
         crossAxisCount: 2,
         children: albums
             .map(

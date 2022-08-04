@@ -30,7 +30,10 @@ class AlbumsPreview extends StatelessWidget {
             ),
             const Divider(),
             GridView.count(
-              childAspectRatio: 9/10,
+              childAspectRatio:
+                  (MediaQuery.of(context).size.width / 2 - 10) / 215,
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 10.0,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
               shrinkWrap: true,
@@ -44,14 +47,17 @@ class AlbumsPreview extends StatelessWidget {
                         children: [
                           Image.network(album.thumbnailUrl ??
                               'https://via.placeholder.com/150x150'), // for test project it's ok
-                          const SizedBox(height: 8,),
+                          const SizedBox(
+                            height: 8,
+                          ),
                           Expanded(
                             child: Text(
                               album.title,
                               textAlign: TextAlign.justify,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                         ],
